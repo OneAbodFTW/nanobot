@@ -10,6 +10,7 @@ RUN mkdir -p nanobot && touch nanobot/__init__.py && \
 
 # Copy the full source and install
 COPY nanobot/ nanobot/
+COPY openclaw-identity/ openclaw-identity/
 RUN uv pip install --system --no-cache .
 
 # Create config directory
