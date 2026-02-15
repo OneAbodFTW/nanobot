@@ -18,7 +18,16 @@ class ContextBuilder:
     into a coherent prompt for the LLM.
     """
 
-    BOOTSTRAP_FILES = ["AGENTS.md", "SOUL.md", "USER.md", "TOOLS.md", "IDENTITY.md"]
+    # Workspace bootstrap files: appended to the system prompt if present.
+    # BOOTSTRAP.md is intentionally optional and meant for first-run onboarding.
+    BOOTSTRAP_FILES = [
+        "AGENTS.md",
+        "SOUL.md",
+        "USER.md",
+        "TOOLS.md",
+        "IDENTITY.md",
+        "BOOTSTRAP.md",
+    ]
 
     def __init__(self, workspace: Path):
         self.workspace = workspace
