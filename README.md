@@ -6,7 +6,6 @@
     <a href="https://pepy.tech/project/nanobot-ai"><img src="https://static.pepy.tech/badge/nanobot-ai" alt="Downloads"></a>
     <img src="https://img.shields.io/badge/python-≥3.11-blue" alt="Python">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-    <a href="./COMMUNICATION.md"><img src="https://img.shields.io/badge/Feishu-Group-E9DBFC?style=flat&logo=feishu&logoColor=white" alt="Feishu"></a>
     <a href="./COMMUNICATION.md"><img src="https://img.shields.io/badge/WeChat-Group-C5EAB4?style=flat&logo=wechat&logoColor=white" alt="WeChat"></a>
     <a href="https://discord.gg/MnCvHqpUGB"><img src="https://img.shields.io/badge/Discord-Community-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
   </p>
@@ -23,11 +22,10 @@
 - **2026-02-13** 🎉 Released v0.1.3.post7 — includes security hardening and multiple improvements. All users are recommended to upgrade to the latest version. See [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post7) for more details.
 - **2026-02-12** 🧠 Redesigned memory system — Less code, more reliable. Join the [discussion](https://github.com/HKUDS/nanobot/discussions/566) about it!
 - **2026-02-10** 🎉 Released v0.1.3.post6 with improvements! Check the updates [notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post6) and our [roadmap](https://github.com/HKUDS/nanobot/discussions/431).
-- **2026-02-09** 💬 Added Slack, Email, and QQ support — nanobot now supports multiple chat platforms!
+- **2026-02-09** 💬 Added Slack support — nanobot now supports multiple chat platforms!
 - **2026-02-08** 🔧 Refactored Providers—adding a new LLM provider now takes just 2 simple steps! Check [here](#providers).
 - **2026-02-07** 🚀 Released v0.1.3.post5 with Qwen support & several key improvements! Check [here](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post5) for details.
 - **2026-02-06** ✨ Added Moonshot/Kimi provider, Discord integration, and enhanced security hardening!
-- **2026-02-05** ✨ Added Feishu channel, DeepSeek provider, and enhanced scheduled tasks support!
 - **2026-02-04** 🚀 Released v0.1.3.post4 with multi-provider & Docker support! Check [here](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post4) for details.
 - **2026-02-03** ⚡ Integrated vLLM for local LLM support and improved natural language task scheduling!
 - **2026-02-02** 🎉 nanobot officially launched! Welcome to try 🐈 nanobot!
@@ -170,19 +168,13 @@ nanobot agent -m "Hello from my local LLM!"
 
 ## 💬 Chat Apps
 
-Talk to your nanobot through Telegram, Discord, WhatsApp, Feishu, Mochat, DingTalk, Slack, Email, or QQ — anytime, anywhere.
+Talk to your nanobot through Telegram, Discord, or Slack — anytime, anywhere.
 
 | Channel | Setup |
 |---------|-------|
 | **Telegram** | Easy (just a token) |
 | **Discord** | Easy (bot token + intents) |
-| **WhatsApp** | Medium (scan QR) |
-| **Feishu** | Medium (app credentials) |
-| **Mochat** | Medium (claw token + websocket) |
-| **DingTalk** | Medium (app credentials) |
 | **Slack** | Medium (bot + app tokens) |
-| **Email** | Medium (IMAP/SMTP credentials) |
-| **QQ** | Easy (app credentials) |
 
 <details>
 <summary><b>Telegram</b> (Recommended)</summary>
@@ -215,63 +207,6 @@ Talk to your nanobot through Telegram, Discord, WhatsApp, Feishu, Mochat, DingTa
 ```bash
 nanobot gateway
 ```
-
-</details>
-
-<details>
-<summary><b>Mochat (Claw IM)</b></summary>
-
-Uses **Socket.IO WebSocket** by default, with HTTP polling fallback.
-
-**1. Ask nanobot to set up Mochat for you**
-
-Simply send this message to nanobot (replace `xxx@xxx` with your real email):
-
-```
-Read https://raw.githubusercontent.com/HKUDS/MoChat/refs/heads/main/skills/nanobot/skill.md and register on MoChat. My Email account is xxx@xxx Bind me as your owner and DM me on MoChat.
-```
-
-nanobot will automatically register, configure `~/.nanobot/config.json`, and connect to Mochat.
-
-**2. Restart gateway**
-
-```bash
-nanobot gateway
-```
-
-That's it — nanobot handles the rest!
-
-<br>
-
-<details>
-<summary>Manual configuration (advanced)</summary>
-
-If you prefer to configure manually, add the following to `~/.nanobot/config.json`:
-
-> Keep `claw_token` private. It should only be sent in `X-Claw-Token` header to your Mochat API endpoint.
-
-```json
-{
-  "channels": {
-    "mochat": {
-      "enabled": true,
-      "base_url": "https://mochat.io",
-      "socket_url": "https://mochat.io",
-      "socket_path": "/socket.io",
-      "claw_token": "claw_xxx",
-      "agent_user_id": "6982abcdef",
-      "sessions": ["*"],
-      "panels": ["*"],
-      "reply_delay_mode": "non-mention",
-      "reply_delay_ms": 120000
-    }
-  }
-}
-```
-
-
-
-</details>
 
 </details>
 
@@ -312,170 +247,6 @@ If you prefer to configure manually, add the following to `~/.nanobot/config.jso
 - Open the generated invite URL and add the bot to your server
 
 **6. Run**
-
-```bash
-nanobot gateway
-```
-
-</details>
-
-<details>
-<summary><b>WhatsApp</b></summary>
-
-Requires **Node.js ≥18**.
-
-**1. Link device**
-
-```bash
-nanobot channels login
-# Scan QR with WhatsApp → Settings → Linked Devices
-```
-
-**2. Configure**
-
-```json
-{
-  "channels": {
-    "whatsapp": {
-      "enabled": true,
-      "allowFrom": ["+1234567890"]
-    }
-  }
-}
-```
-
-**3. Run** (two terminals)
-
-```bash
-# Terminal 1
-nanobot channels login
-
-# Terminal 2
-nanobot gateway
-```
-
-</details>
-
-<details>
-<summary><b>Feishu (飞书)</b></summary>
-
-Uses **WebSocket** long connection — no public IP required.
-
-**1. Create a Feishu bot**
-- Visit [Feishu Open Platform](https://open.feishu.cn/app)
-- Create a new app → Enable **Bot** capability
-- **Permissions**: Add `im:message` (send messages)
-- **Events**: Add `im.message.receive_v1` (receive messages)
-  - Select **Long Connection** mode (requires running nanobot first to establish connection)
-- Get **App ID** and **App Secret** from "Credentials & Basic Info"
-- Publish the app
-
-**2. Configure**
-
-```json
-{
-  "channels": {
-    "feishu": {
-      "enabled": true,
-      "appId": "cli_xxx",
-      "appSecret": "xxx",
-      "encryptKey": "",
-      "verificationToken": "",
-      "allowFrom": []
-    }
-  }
-}
-```
-
-> `encryptKey` and `verificationToken` are optional for Long Connection mode.
-> `allowFrom`: Leave empty to allow all users, or add `["ou_xxx"]` to restrict access.
-
-**3. Run**
-
-```bash
-nanobot gateway
-```
-
-> [!TIP]
-> Feishu uses WebSocket to receive messages — no webhook or public IP needed!
-
-</details>
-
-<details>
-<summary><b>QQ (QQ单聊)</b></summary>
-
-Uses **botpy SDK** with WebSocket — no public IP required. Currently supports **private messages only**.
-
-**1. Register & create bot**
-- Visit [QQ Open Platform](https://q.qq.com) → Register as a developer (personal or enterprise)
-- Create a new bot application
-- Go to **开发设置 (Developer Settings)** → copy **AppID** and **AppSecret**
-
-**2. Set up sandbox for testing**
-- In the bot management console, find **沙箱配置 (Sandbox Config)**
-- Under **在消息列表配置**, click **添加成员** and add your own QQ number
-- Once added, scan the bot's QR code with mobile QQ → open the bot profile → tap "发消息" to start chatting
-
-**3. Configure**
-
-> - `allowFrom`: Leave empty for public access, or add user openids to restrict. You can find openids in the nanobot logs when a user messages the bot.
-> - For production: submit a review in the bot console and publish. See [QQ Bot Docs](https://bot.q.qq.com/wiki/) for the full publishing flow.
-
-```json
-{
-  "channels": {
-    "qq": {
-      "enabled": true,
-      "appId": "YOUR_APP_ID",
-      "secret": "YOUR_APP_SECRET",
-      "allowFrom": []
-    }
-  }
-}
-```
-
-**4. Run**
-
-```bash
-nanobot gateway
-```
-
-Now send a message to the bot from QQ — it should respond!
-
-</details>
-
-<details>
-<summary><b>DingTalk (钉钉)</b></summary>
-
-Uses **Stream Mode** — no public IP required.
-
-**1. Create a DingTalk bot**
-- Visit [DingTalk Open Platform](https://open-dev.dingtalk.com/)
-- Create a new app -> Add **Robot** capability
-- **Configuration**:
-  - Toggle **Stream Mode** ON
-- **Permissions**: Add necessary permissions for sending messages
-- Get **AppKey** (Client ID) and **AppSecret** (Client Secret) from "Credentials"
-- Publish the app
-
-**2. Configure**
-
-```json
-{
-  "channels": {
-    "dingtalk": {
-      "enabled": true,
-      "clientId": "YOUR_APP_KEY",
-      "clientSecret": "YOUR_APP_SECRET",
-      "allowFrom": []
-    }
-  }
-}
-```
-
-> `allowFrom`: Leave empty to allow all users, or add `["staffId"]` to restrict access.
-
-**3. Run**
 
 ```bash
 nanobot gateway
@@ -525,53 +296,6 @@ DM the bot directly or @mention it in a channel — it should respond!
 > [!TIP]
 > - `groupPolicy`: `"mention"` (default — respond only when @mentioned), `"open"` (respond to all channel messages), or `"allowlist"` (restrict to specific channels).
 > - DM policy defaults to open. Set `"dm": {"enabled": false}` to disable DMs.
-
-</details>
-
-<details>
-<summary><b>Email</b></summary>
-
-Give nanobot its own email account. It polls **IMAP** for incoming mail and replies via **SMTP** — like a personal email assistant.
-
-**1. Get credentials (Gmail example)**
-- Create a dedicated Gmail account for your bot (e.g. `my-nanobot@gmail.com`)
-- Enable 2-Step Verification → Create an [App Password](https://myaccount.google.com/apppasswords)
-- Use this app password for both IMAP and SMTP
-
-**2. Configure**
-
-> - `consentGranted` must be `true` to allow mailbox access. This is a safety gate — set `false` to fully disable.
-> - `allowFrom`: Leave empty to accept emails from anyone, or restrict to specific senders.
-> - `smtpUseTls` and `smtpUseSsl` default to `true` / `false` respectively, which is correct for Gmail (port 587 + STARTTLS). No need to set them explicitly.
-> - Set `"autoReplyEnabled": false` if you only want to read/analyze emails without sending automatic replies.
-
-```json
-{
-  "channels": {
-    "email": {
-      "enabled": true,
-      "consentGranted": true,
-      "imapHost": "imap.gmail.com",
-      "imapPort": 993,
-      "imapUsername": "my-nanobot@gmail.com",
-      "imapPassword": "your-app-password",
-      "smtpHost": "smtp.gmail.com",
-      "smtpPort": 587,
-      "smtpUsername": "my-nanobot@gmail.com",
-      "smtpPassword": "your-app-password",
-      "fromAddress": "my-nanobot@gmail.com",
-      "allowFrom": ["your-real-email@gmail.com"]
-    }
-  }
-}
-```
-
-
-**3. Run**
-
-```bash
-nanobot gateway
-```
 
 </details>
 
@@ -678,7 +402,6 @@ That's it! Environment variables, model prefixing, config matching, and `nanobot
 | `nanobot agent --logs` | Show runtime logs during chat |
 | `nanobot gateway` | Start the gateway |
 | `nanobot status` | Show status |
-| `nanobot channels login` | Link WhatsApp (scan QR) |
 | `nanobot channels status` | Show channel status |
 
 Interactive mode exits: `exit`, `quit`, `/exit`, `/quit`, `:q`, or `Ctrl+D`.
@@ -717,7 +440,7 @@ docker run -v ~/.nanobot:/root/.nanobot --rm nanobot onboard
 # Edit config on host to add API keys
 vim ~/.nanobot/config.json
 
-# Run gateway (connects to enabled channels, e.g. Telegram/Discord/Mochat)
+# Run gateway (connects to enabled channels, e.g. Telegram/Discord/Slack)
 docker run -v ~/.nanobot:/root/.nanobot -p 18790:18790 nanobot gateway
 
 # Or run a single command
