@@ -234,6 +234,67 @@ def _make_provider(config):
 
 
 @app.command()
+def restart(
+    port: int = typer.Option(18790, "--port", "-p", help="Gateway port"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+):
+    """Restart the nanobot gateway (stop existing, start new in background)."""
+    import shutil
+    import subprocess
+    import time
+
+    my_pid = os.getpid()
+
+    # Find and kill existing gateway processes
+    try:
+        result = subprocess.run(
+            ["pgrep", "-f", "nanobot gateway"],
+            capture_output=True,
+            text=True,
+        )
+        pids = [int(p) for p in result.stdout.strip().splitlines() if p.strip()]
+        pids = [p for p in pids if p != my_pid]
+    except FileNotFoundError:
+        pids = []
+
+    if pids:
+        for pid in pids:
+            try:
+                os.kill(pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+        console.print(f"[yellow]Stopped {len(pids)} gateway process(es)[/yellow]")
+        time.sleep(1)
+    else:
+        console.print("[dim]No running gateway found[/dim]")
+
+    # Start new gateway in background
+    nanobot_bin = shutil.which("nanobot")
+    if not nanobot_bin:
+        console.print("[red]Error: nanobot executable not found in PATH[/red]")
+        raise typer.Exit(1)
+
+    cmd = [nanobot_bin, "gateway", "--port", str(port)]
+    if verbose:
+        cmd.append("--verbose")
+
+    log_dir = Path.home() / ".nanobot" / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "gateway.log"
+
+    with open(log_file, "w") as lf:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=lf,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+
+    console.print(f"[green]✓[/green] Gateway started (pid {proc.pid}, port {port})")
+    console.print(f"[dim]Logs: {log_file}[/dim]")
+
+
+@app.command()
 def gateway(
     port: int = typer.Option(18790, "--port", "-p", help="Gateway port"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
