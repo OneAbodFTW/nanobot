@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Resolve the directory of the script, handling symlinks
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+
+PYTHON_SCRIPT="$DIR/summarize_yt.py"
+
+if [ ! -f "$PYTHON_SCRIPT" ]; then
+    echo "Error: Could not find python script at $PYTHON_SCRIPT"
+    echo "Please ensure summarize_yt.py is in the same directory as this script."
+    exit 1
+fi
+
+# Check for API key
+if [ -z "$OPENROUTER_API_KEY" ]; then
+    echo "Error: OPENROUTER_API_KEY environment variable is not set."
+    echo "Please export OPENROUTER_API_KEY='your_key_here'"
+    exit 1
+fi
+
+# Run the python script with all arguments passed to this script
+python3 "$PYTHON_SCRIPT" "$@"
